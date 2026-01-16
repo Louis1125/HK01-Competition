@@ -1,0 +1,65 @@
+{
+  "metadata": {
+    "name": "Medication Dataset",
+    "version": "1.0",
+    "created": "2025-11-27T14:58:21.158268",
+    "total_persons": 3,
+    "total_medications": 5
+  },
+  "persons": [
+    {
+      "id": 1,
+      "name": "John Smith",
+      "age": 78,
+      "phone": "555-0101",
+      "medications": [
+        {
+          "name": "Paracetamol",
+          "dosage": "500mg",
+          "frequency": "3 times daily",
+          "reason": "Pain relief"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Mary Johnson",
+      "age": 82,
+      "phone": "555-0102",
+      "medications": [
+        {
+          "name": "Cold & Flu Pills",
+          "dosage": "1 capsule",
+          "frequency": "3 times daily",
+          "reason": "Cold symptoms"
+        },
+        {
+          "name": "Cough Syrup",
+          "dosage": "2 teaspoons",
+          "frequency": "bedtime",
+          "reason": "Cough relief"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Robert Brown",
+      "age": 75,
+      "phone": "555-0103",
+      "medications": [
+        {
+          "name": "Aspirin",
+          "dosage": "81mg",
+          "frequency": "once daily",
+          "reason": "Heart prevention"
+        },
+        {
+          "name": "Vitamin D3",
+          "dosage": "1000 IU",
+          "frequency": "once daily",
+          "reason": "Bone health"
+        }
+      ]
+    }
+  ]
+}

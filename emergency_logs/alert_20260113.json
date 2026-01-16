@@ -1,0 +1,67 @@
+[
+  {
+    "success": true,
+    "timestamp": "2026-01-13 20:46:07",
+    "patient_id": "1",
+    "condition": "Demo panic test",
+    "severity": "CRITICAL",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-13 20:46:25",
+    "patient_id": "1",
+    "condition": "Demo panic test",
+    "severity": "CRITICAL",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-13 21:01:01",
+    "patient_id": "1",
+    "condition": "Demo panic test",
+    "severity": "CRITICAL",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-13 21:04:32",
+    "patient_id": "1",
+    "condition": "Demo panic test",
+    "severity": "CRITICAL",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-13 21:17:03",
+    "patient_id": "1",
+    "condition": "Demo panic test",
+    "severity": "CRITICAL",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  }
+]

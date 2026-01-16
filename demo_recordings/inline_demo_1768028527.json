@@ -1,0 +1,100 @@
+[
+  {
+    "ts": "2026-01-10 15:02:07",
+    "event": "demo_start",
+    "details": "Integrated demo started"
+  },
+  {
+    "ts": "2026-01-10 15:02:07",
+    "event": "camera_frame",
+    "details": {
+      "frame": 1,
+      "identified": "Demo Elder",
+      "confidence": 0.8
+    }
+  },
+  {
+    "ts": "2026-01-10 15:02:07",
+    "event": "camera_frame",
+    "details": {
+      "frame": 2,
+      "identified": "Demo Elder",
+      "confidence": 0.75
+    }
+  },
+  {
+    "ts": "2026-01-10 15:02:07",
+    "event": "camera_frame",
+    "details": {
+      "frame": 3,
+      "identified": "Demo Elder",
+      "confidence": 0.7000000000000001
+    }
+  },
+  {
+    "ts": "2026-01-10 15:02:07",
+    "event": "camera_frame",
+    "details": {
+      "frame": 4,
+      "identified": "Demo Elder",
+      "confidence": 0.65
+    }
+  },
+  {
+    "ts": "2026-01-10 15:02:07",
+    "event": "camera_frame",
+    "details": {
+      "frame": 5,
+      "identified": "Demo Elder",
+      "confidence": 0.6000000000000001
+    }
+  },
+  {
+    "ts": "2026-01-10 15:02:07",
+    "event": "camera_stop",
+    "details": "Summarizing recent identifications"
+  },
+  {
+    "ts": "2026-01-10 15:02:07",
+    "event": "identification_summary",
+    "details": {
+      "person_id": 1,
+      "name": "Demo Elder",
+      "count": 5,
+      "avg_confidence": 0.7,
+      "support": 1.0,
+      "total_samples": 5,
+      "latest_timestamp": 1768028526.0582569
+    }
+  },
+  {
+    "ts": "2026-01-10 15:02:07",
+    "event": "reminder_trigger",
+    "details": "Demo medication reminder"
+  },
+  {
+    "ts": "2026-01-10 15:02:07",
+    "event": "reminder_send",
+    "details": {
+      "title": "Reminder: Paracetamol",
+      "body": "John Smith is due now."
+    }
+  },
+  {
+    "ts": "2026-01-10 15:02:07",
+    "event": "fall_simulation",
+    "details": "Simulating fall detection"
+  },
+  {
+    "ts": "2026-01-10 15:02:07",
+    "event": "panic_sent",
+    "details": {
+      "result": true
+    }
+  },
+  {
+    "ts": "2026-01-10 15:02:07",
+    "event": "demo_end",
+    "details": "Integrated demo finished"
+  }
+]

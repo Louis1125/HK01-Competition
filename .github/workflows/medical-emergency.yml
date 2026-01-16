@@ -1,0 +1,139 @@
+name: 🚨 Medical Emergency Alert
+
+on:
+  # Triggered via repository_dispatch from your program
+  repository_dispatch:
+    types: [medical-emergency]
+  
+  # Manual trigger for testing
+  workflow_dispatch:
+    inputs:
+      patient_id:
+        description: 'Patient ID'
+        required: true
+        default: 'TEST_001'
+      patient_name:
+        description: 'Patient Name'
+        required: true
+        default: 'Test Patient'
+      condition:
+        description: 'Emergency Condition'
+        required: true
+        default: 'Manual test alert'
+      severity:
+        description: 'Severity Level'
+        required: true
+        default: 'TEST'
+        type: choice
+        options:
+          - CRITICAL
+          - HIGH
+          - MEDIUM
+          - TEST
+
+jobs:
+  emergency-alert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5  # Fail fast if can't send
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+      
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: 📦 Install dependencies
+        run: |
+          pip install requests python-dotenv
+      
+      - name: 🚨 Send Emergency Alert
+        env:
+          EMERGENCY_EMAIL: ${{ secrets.EMERGENCY_EMAIL }}
+          EMERGENCY_EMAIL_PASS: ${{ secrets.EMERGENCY_EMAIL_PASS }}
+          PATIENT_WHATSAPP: ${{ secrets.PATIENT_WHATSAPP }}
+          PATIENT_EMAIL: ${{ secrets.PATIENT_EMAIL }}
+          CALLMEBOT_APIKEY: ${{ secrets.CALLMEBOT_APIKEY }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_FROM_NUMBER: ${{ secrets.TWILIO_FROM_NUMBER }}
+        run: |
+          # Get alert data from dispatch event or workflow_dispatch inputs
+          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
+            PATIENT_ID="${{ github.event.client_payload.patient_id }}"
+            PATIENT_NAME="${{ github.event.client_payload.patient_name }}"
+            CONDITION="${{ github.event.client_payload.condition }}"
+            SEVERITY="${{ github.event.client_payload.severity }}"
+          else
+            PATIENT_ID="${{ github.event.inputs.patient_id }}"
+            PATIENT_NAME="${{ github.event.inputs.patient_name }}"
+            CONDITION="${{ github.event.inputs.condition }}"
+            SEVERITY="${{ github.event.inputs.severity }}"
+          fi
+          
+          echo "🚨 Sending emergency alert..."
+          echo "   Patient: $PATIENT_NAME ($PATIENT_ID)"
+          echo "   Condition: $CONDITION"
+          echo "   Severity: $SEVERITY"
+          
+          python << EOF
+          import os
+          import sys
+          sys.path.insert(0, '.')
+          
+          from emergency_alert import MedicalEmergencyAlert
+          
+          alert = MedicalEmergencyAlert()
+          result = alert.send_emergency(
+              patient_id="$PATIENT_ID",
+              patient_name="$PATIENT_NAME",
+              condition="$CONDITION",
+              severity="$SEVERITY",
+              extra_data={"Source": "GitHub Actions", "Workflow": "${{ github.workflow }}"}
+          )
+          
+          if result.get("success"):
+              print("✅ Emergency alert sent successfully!")
+              print(f"   Channels used: {list(result.get('channels', {}).keys())}")
+          else:
+              print("❌ CRITICAL: Failed to send emergency alert!")
+              print(f"   Attempted channels: {result.get('channels', {})}")
+              sys.exit(1)
+          EOF
+      
+      - name: 📝 Log Emergency Event
+        if: always()
+        run: |
+          TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S UTC')
+          
+          if [ "${{ github.event_name }}" == "repository_dispatch" ]; then
+            PATIENT_ID="${{ github.event.client_payload.patient_id }}"
+            CONDITION="${{ github.event.client_payload.condition }}"
+          else
+            PATIENT_ID="${{ github.event.inputs.patient_id }}"
+            CONDITION="${{ github.event.inputs.condition }}"
+          fi
+          
+          mkdir -p emergency_logs
+          cat > emergency_logs/alert_${{ github.run_id }}.json << EOF
+          {
+            "timestamp": "$TIMESTAMP",
+            "run_id": "${{ github.run_id }}",
+            "patient_id": "$PATIENT_ID",
+            "condition": "$CONDITION",
+            "status": "${{ job.status }}",
+            "trigger": "${{ github.event_name }}"
+          }
+          EOF
+          
+          echo "Emergency alert logged"
+      
+      - name: 📤 Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: emergency-logs-${{ github.run_id }}
+          path: emergency_logs/
+          retention-days: 90

@@ -1,0 +1,6 @@
+person_id,name,age,medication,dosage,frequency
+1,John Smith,78,Paracetamol,500mg,3_times_daily
+2,Mary Johnson,82,Cold & Flu Pills,1_capsule,3_times_daily
+2,Mary Johnson,82,Cough Syrup,2_teaspoons,bedtime
+3,Robert Brown,75,Aspirin,81mg,once_daily
+3,Robert Brown,75,Vitamin D3,1000_IU,once_daily

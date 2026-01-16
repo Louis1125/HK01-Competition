@@ -1,0 +1,266 @@
+"""
+MAIN PROGRAM - Elderly Medication Management System
+Integrates YOLOv4 detection with medication database
+"""
+
+from personalized_medications import setup_personalized_medications
+from elder_medication_system import MedicationReminder
+
+# Camera serving support
+import threading
+import http.server
+import socketserver
+import webbrowser
+import functools
+import os
+from pathlib import Path
+import time
+import base64
+import re
+import sys
+
+
+def display_person(person_id, manager, reminder):
+    """Display person's complete medication information."""
+    person = manager.get_elder(person_id)
+    
+    if person is None:
+        print(f"\n[ERROR] Person {person_id} not found\n")
+        return
+    
+    medications = manager.get_medications(person_id)
+    schedules = manager.get_schedules(elder_id=person_id)
+    due_meds = reminder.get_due_medications(person_id, within_hours=4)
+    compliance = reminder.get_compliance_report(person_id, days=7)
+    
+    print("\n" + "=" * 80)
+    print(f"PERSON {person_id}: {person['name'].upper()}")
+    print("=" * 80)
+    
+    print(f"\n[BASIC INFO]")
+    print(f"  Name:    {person['name']}")
+    print(f"  Age:     {person['age']}")
+    print(f"  Phone:   {person['phone']}")
+    print(f"  Contact: {person['emergency_contact']}")
+    print(f"  Address: {person['address']}")
+    
+    print(f"\n[MEDICATIONS] ({len(medications)}):")
+    for med in medications:
+        print(f"  - {med['name']} ({med['dosage']})")
+        print(f"    Reason: {med['reason']}")
+    
+    print(f"\n[SCHEDULE] ({len(schedules)} times/day):")
+    for sched in schedules:
+        print(f"  - {sched['time']}: {sched['frequency']}")
+    
+    print(f"\n[DUE NOW]:")
+    if due_meds:
+        for med in due_meds:
+            print(f"  - {med['name']} at {med['time']}")
+    else:
+        print("  (None)")
+    
+    print(f"\n[7-DAY COMPLIANCE]:")
+    for comp in compliance['medications']:
+        pct = comp['compliance_percent']
+        print(f"  - {comp['name']}: {comp['taken']}/{comp['scheduled']} ({pct:.1f}%)")
+    
+    print("\n" + "=" * 80 + "\n")
+    # Interactive prompt so user knows how to proceed
+    while True:
+        print("Options: 'back' to return to main menu, 'all' to list all persons, 'exit' to quit")
+        choice = input("Enter option > ").strip().lower()
+        if not choice:
+            continue
+        if choice in ("back", "b"):
+            # Show the main table (all persons) as an interactive loop
+            display_all(manager)
+            break
+        if choice == "all":
+            display_all(manager)
+            break
+        if choice in ("exit", "quit", "q"):
+            print("\n[OK] Program closed. Goodbye!\n")
+            sys.exit(0)
+        print(f"[ERROR] Unknown option: {choice}\n")
+
+
+def display_all(manager):
+    """Display all persons in database."""
+    all_persons = manager.get_all_elders()
+    
+    print("\n" + "=" * 80)
+    print("ALL PERSONS IN DATABASE")
+    print("=" * 80)
+    print(f"\nTotal: {len(all_persons)} persons\n")
+    
+    for p in all_persons:
+        print(f"  [{p['elder_id']}] {p['name']} - Age {p['age']}")
+    
+    print("\n" + "=" * 80 + "\n")
+
+    # Interactive prompt so user knows how to proceed
+    while True:
+        print("Options: 'back' to return to main menu, 'person <id>' to view a person, 'exit' to quit")
+        choice = input("Enter option > ").strip().lower()
+        if not choice:
+            continue
+        if choice in ("back", "b"):
+            break
+        if choice.startswith("person "):
+            try:
+                pid = int(choice.split()[1])
+                # create a temporary MedicationReminder instance if needed
+                # the main loop passes a reminder; here we call with a placeholder if missing
+                try:
+                    # attempt to access reminder from globals (not guaranteed)
+                    reminder = globals().get('reminder')
+                except Exception:
+                    reminder = None
+                if reminder is None:
+                    print("[WARN] Reminder object not available here; returning to menu.")
+                    break
+                display_person(pid, manager, reminder)
+            except (IndexError, ValueError):
+                print("[ERROR] Use: person <id> (e.g., person 1)")
+            continue
+        if choice in ("exit", "quit", "q"):
+            print("\n[OK] Program closed. Goodbye!\n")
+            sys.exit(0)
+        print(f"[ERROR] Unknown option: {choice}\n")
+
+
+def main():
+    """Main program - Interactive medication management system."""
+    print("\n" + "=" * 80)
+    print("ELDERLY MEDICATION MANAGEMENT SYSTEM")
+    print("=" * 80)
+    
+    print("\nLoading database...")
+    db, manager = setup_personalized_medications()
+    reminder = MedicationReminder(manager)
+    print("[OK] Database loaded\n")
+    
+    print("AVAILABLE COMMANDS:")
+    print("  person 1  - Show Person 1 (John Smith)")
+    print("  person 2  - Show Person 2 (Mary Johnson)")
+    print("  person 3  - Show Person 3 (Robert Brown)")
+    print("  all       - Show all persons")
+    print("  camera    - Serve and open Camera.html in browser")
+    print("  stopcamera- Stop camera server")
+    print("  exit      - Exit program\n")
+    
+    print("=" * 80 + "\n")
+    
+    # Camera server state
+    _httpd = None
+    _server_thread = None
+
+    def start_camera_server(port=8000):
+        nonlocal _httpd, _server_thread
+        if _httpd is not None:
+            print(f"[INFO] Camera server already running on port {_httpd.server_address[1]}")
+            return
+        root = Path(__file__).parent.resolve()
+        # Ensure a small favicon exists so the browser won't trigger a 404 for /favicon.ico
+        try:
+            favicon_path = root / "favicon.ico"
+            if not favicon_path.exists():
+                png_base64 = b'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAoMBgP9sR3sAAAAASUVORK5CYII='
+                favicon_path.write_bytes(base64.b64decode(png_base64))
+        except Exception as _e:
+            print(f"[WARN] Could not create favicon.ico: {_e}")
+
+        handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(root))
+        try:
+            httpd = http.server.ThreadingHTTPServer(("127.0.0.1", port), handler)
+        except Exception:
+            httpd = http.server.ThreadingHTTPServer(("", port), handler)
+
+        def serve():
+            try:
+                httpd.serve_forever()
+            except Exception:
+                pass
+
+        t = threading.Thread(target=serve, daemon=True)
+        _httpd = httpd
+        _server_thread = t
+        t.start()
+        # give server a moment to start
+        time.sleep(0.2)
+        url = f"http://127.0.0.1:{port}/Camera.html"
+        print(f"[OK] Camera server started at {url}")
+        webbrowser.open(url)
+
+    def stop_camera_server():
+        nonlocal _httpd, _server_thread
+        if _httpd is None:
+            print("[INFO] Camera server is not running")
+            return
+        try:
+            _httpd.shutdown()
+            _server_thread.join(timeout=1.0)
+        except Exception as e:
+            print(f"[ERROR] Stopping server: {e}")
+        _httpd = None
+        _server_thread = None
+        print("[OK] Camera server stopped")
+
+    while True:
+        try:
+            cmd = input("Enter command > ").strip().lower()
+            # Sanitize accidental shell invocation lines (PowerShell/VSCode prints)
+            # e.g. & "D:/.../.venv/Scripts/python.exe" "d:/.../HK01 Competition 12-12-2025 main programme.py"
+            if not cmd:
+                continue
+            # Unquote for pattern checks
+            cmd_unquoted = cmd.strip('"\'')
+            if cmd_unquoted.startswith('& '):
+                print("[INFO] Ignoring shell invocation line.")
+                continue
+            # If the input looks like a path or a python / exe invocation, ignore it
+            if re.search(r'(^[A-Za-z]:[\\/])|python\.exe|\.venv|scripts[\\/]|\.py\b|\.exe\b', cmd_unquoted, re.IGNORECASE):
+                print("[INFO] Ignoring shell/path-like input.")
+                continue
+            if cmd == "exit" or cmd == "quit":
+                print("\n[OK] Program closed. Goodbye!\n")
+                break
+            
+            if cmd == "all":
+                display_all(manager)
+                continue
+
+            if cmd == "camera":
+                try:
+                    start_camera_server(port=8000)
+                except Exception as e:
+                    print(f"[ERROR] Could not start camera server: {e}")
+                continue
+
+            if cmd == "stopcamera":
+                try:
+                    stop_camera_server()
+                except Exception as e:
+                    print(f"[ERROR] Could not stop camera server: {e}")
+                continue
+            
+            if cmd.startswith("person "):
+                try:
+                    person_id = int(cmd.split()[1])
+                    display_person(person_id, manager, reminder)
+                except (IndexError, ValueError):
+                    print("[ERROR] Use: person 1, person 2, person 3\n")
+                continue
+            
+            print(f"[ERROR] Unknown command: {cmd}\n")
+        
+        except KeyboardInterrupt:
+            print("\n\n[OK] Program closed. Goodbye!\n")
+            break
+        except Exception as e:
+            print(f"[ERROR] {e}\n")
+
+
+if __name__ == "__main__":
+    main()

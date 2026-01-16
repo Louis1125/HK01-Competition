@@ -1,0 +1,220 @@
+{
+  "elders": [
+    {
+      "elder_id": 1,
+      "name": "John Smith",
+      "age": 78,
+      "phone": "555-0101",
+      "emergency_contact": "Alice Smith (daughter)",
+      "address": "123 Main St"
+    },
+    {
+      "elder_id": 2,
+      "name": "Mary Johnson",
+      "age": 82,
+      "phone": "555-0102",
+      "emergency_contact": "Bob Johnson (son)",
+      "address": "456 Oak Ave"
+    },
+    {
+      "elder_id": 3,
+      "name": "Robert Brown",
+      "age": 75,
+      "phone": "555-0103",
+      "emergency_contact": "Carol Brown (wife)",
+      "address": "789 Pine Rd"
+    }
+  ],
+  "medications": [
+    {
+      "med_id": 6,
+      "elder_id": 1,
+      "name": "Paracetamol",
+      "dosage": "500mg",
+      "reason": "Pain relief & headaches",
+      "side_effects": "Rare: liver damage if overdosed",
+      "notes": "Maximum 3 doses per day, space 4-6 hours apart"
+    },
+    {
+      "med_id": 7,
+      "elder_id": 2,
+      "name": "Cold & Flu Relief Capsules",
+      "dosage": "1 capsule (contains Paracetamol 500mg + Caffeine 65mg)",
+      "reason": "Treatment of cold and flu symptoms (headache, fever, body ache)",
+      "side_effects": "Mild: insomnia (due to caffeine), dizziness",
+      "notes": "Take with water. Do not take more than 4 capsules in 24 hours"
+    },
+    {
+      "med_id": 8,
+      "elder_id": 2,
+      "name": "Cough Suppressant Syrup",
+      "dosage": "2 teaspoons (10ml)",
+      "reason": "Relief from persistent cough",
+      "side_effects": "Drowsiness, dizziness",
+      "notes": "Take at bedtime if cough is severe"
+    },
+    {
+      "med_id": 9,
+      "elder_id": 3,
+      "name": "Aspirin",
+      "dosage": "81mg (Low-dose)",
+      "reason": "Heart disease prevention & blood thinner",
+      "side_effects": "Mild stomach upset, increased bleeding risk",
+      "notes": "Take with food or after meals"
+    },
+    {
+      "med_id": 10,
+      "elder_id": 3,
+      "name": "Vitamin D3",
+      "dosage": "1000 IU",
+      "reason": "Bone health & calcium absorption",
+      "side_effects": "None (at this dose)",
+      "notes": "Take with breakfast for better absorption"
+    }
+  ],
+  "schedules": [
+    {
+      "schedule_id": 1,
+      "med_id": 6,
+      "time": "08:00",
+      "frequency": "Once daily",
+      "days": "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
+      "start_date": "2025-01-01",
+      "end_date": "2025-12-31",
+      "elder_id": 1
+    },
+    {
+      "schedule_id": 2,
+      "med_id": 6,
+      "time": "14:00",
+      "frequency": "As needed",
+      "days": "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
+      "start_date": "2025-01-01",
+      "end_date": "2025-12-31",
+      "elder_id": 1
+    },
+    {
+      "schedule_id": 3,
+      "med_id": 6,
+      "time": "20:00",
+      "frequency": "As needed",
+      "days": "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
+      "start_date": "2025-01-01",
+      "end_date": "2025-12-31",
+      "elder_id": 1
+    },
+    {
+      "schedule_id": 4,
+      "med_id": 7,
+      "time": "08:00",
+      "frequency": "Once every 4-6 hours as needed",
+      "days": "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
+      "start_date": "2025-01-01",
+      "end_date": "2025-12-31",
+      "elder_id": 2
+    },
+    {
+      "schedule_id": 5,
+      "med_id": 7,
+      "time": "12:00",
+      "frequency": "Once every 4-6 hours as needed",
+      "days": "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
+      "start_date": "2025-01-01",
+      "end_date": "2025-12-31",
+      "elder_id": 2
+    },
+    {
+      "schedule_id": 6,
+      "med_id": 7,
+      "time": "18:00",
+      "frequency": "Once every 4-6 hours as needed",
+      "days": "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
+      "start_date": "2025-01-01",
+      "end_date": "2025-12-31",
+      "elder_id": 2
+    },
+    {
+      "schedule_id": 7,
+      "med_id": 8,
+      "time": "21:00",
+      "frequency": "Once at bedtime as needed",
+      "days": "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
+      "start_date": "2025-01-01",
+      "end_date": "2025-12-31",
+      "elder_id": 2
+    },
+    {
+      "schedule_id": 8,
+      "med_id": 9,
+      "time": "07:00",
+      "frequency": "Once daily",
+      "days": "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
+      "start_date": "2025-01-01",
+      "end_date": "2025-12-31",
+      "elder_id": 3
+    },
+    {
+      "schedule_id": 9,
+      "med_id": 10,
+      "time": "08:00",
+      "frequency": "Once daily",
+      "days": "Mon,Tue,Wed,Thu,Fri,Sat,Sun",
+      "start_date": "2025-01-01",
+      "end_date": "2025-12-31",
+      "elder_id": 3
+    }
+  ],
+  "compliance_reports": [
+    {
+      "elder_id": 1,
+      "elder_name": "John Smith",
+      "period_days": 7,
+      "medications": [
+        {
+          "name": "Paracetamol",
+          "scheduled": 3,
+          "taken": 0,
+          "compliance_percent": 0.0
+        }
+      ]
+    },
+    {
+      "elder_id": 2,
+      "elder_name": "Mary Johnson",
+      "period_days": 7,
+      "medications": [
+        {
+          "name": "Cold & Flu Relief Capsules",
+          "scheduled": 3,
+          "taken": 0,
+          "compliance_percent": 0.0
+        },
+        {
+          "name": "Cough Suppressant Syrup",
+          "scheduled": 1,
+          "taken": 0,
+          "compliance_percent": 0.0
+        }
+      ]
+    },
+    {
+      "elder_id": 3,
+      "elder_name": "Robert Brown",
+      "period_days": 7,
+      "medications": [
+        {
+          "name": "Aspirin",
+          "scheduled": 1,
+          "taken": 0,
+          "compliance_percent": 0.0
+        },
+        {
+          "name": "Vitamin D3",
+          "scheduled": 1,
+          "taken": 0,
+          "compliance_percent": 0.0
+        }
+      ]
+    }
+  ]
+}

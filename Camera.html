@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Camera Preview</title>
+  <style>
+    html, body { height:100%; margin:0; }
+    body { font-family: Arial, sans-serif; background:#000; color:#fff; }
+    /* Top header bar */
+    #header { position:fixed; left:0; top:0; right:0; height:48px; background:#222; color:#fff; display:flex; align-items:center; padding:0 12px; z-index:40; }
+    #header .title { font-weight:600; font-size:18px; }
+
+    /* Main area under header */
+    #container { position:relative; width:100%; height:calc(100vh - 96px); margin-top:48px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#000; }
+    /* video keeps aspect and is centered with black bars left/right */
+    #video { max-width:70%; max-height:100%; object-fit:cover; display:block; }
+    /* Canvas overlays same visual area as video */
+    #canvas { position:absolute; pointer-events:none; z-index:30; }
+
+    /* Bottom control bar */
+    #controls { position:fixed; left:0; right:0; bottom:0; height:48px; display:flex; align-items:center; justify-content:space-between; background:rgba(0,0,0,0.75); padding:6px 12px; z-index:40; }
+    #controls .left { color:#ddd; font-size:14px; }
+    #controls .right { display:flex; align-items:center }
+    #controls button { margin-left:8px; padding:8px 12px; border-radius:4px; border:0; background:#111; color:#fff; cursor:pointer; }
+    #controls button:disabled { opacity:0.5; cursor:default }
+  </style>
+</head>
+<body>
+  <div id="header"><div class="title">Camera Preview</div></div>
+  <div id="container">
+    <video id="video" autoplay muted playsinline></video>
+    <canvas id="canvas"></canvas>
+  </div>
+  <div id="controls">
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <span id="status"></span>
+  </div>
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const container = document.getElementById('container');
+    // Offscreen canvas used for sending smaller frames to the server
+    const CAPTURE_WIDTH = 416; // width used for inference (YOLO typical)
+    let CAPTURE_HEIGHT = 240; // computed based on video aspect
+    const sendCanvas = document.createElement('canvas');
+    const sendCtx = sendCanvas.getContext('2d');
+    const ctx = canvas.getContext('2d');
+    const startBtn = document.getElementById('start');
+    const stopBtn = document.getElementById('stop');
+    const status = document.getElementById('status');
+
+    let stream = null;
+    let intervalId = null;
+
+    async function startCamera() {
+      // Prevent multiple starts
+      if (stream) return;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      } catch (e) {
+        status.textContent = 'Camera permission denied or no camera available';
+        console.error('getUserMedia failed', e);
+        return;
+      }
+      video.srcObject = stream;
+      // Hide the raw video element so only the canvas-rendered frame is visible.
+      // We keep the video in the layout (opacity=0) so dimensions continue to be measurable.
+      try { video.style.opacity = '0'; } catch(e) {}
+      status.textContent = 'Camera started';
+      // compute capture height preserving aspect after metadata available
+      video.addEventListener('loadedmetadata', () => {
+        try {
+          CAPTURE_HEIGHT = Math.round(CAPTURE_WIDTH * (video.videoHeight / video.videoWidth || 0.75));
+          sendCanvas.width = CAPTURE_WIDTH;
+          sendCanvas.height = CAPTURE_HEIGHT;
+        } catch (e) {}
+        // set visible canvas size to match desired display area
+        resizeCanvas();
+      }, { once: true });
+
+      // Start a smooth animation loop to draw video into the visible canvas
+      let running = true;
+      function drawLoop() {
+        if (!running) return;
+        try {
+          // draw full-size video into display canvas (stretched to canvas pixel size)
+          const dw = canvas.width;
+          const dh = canvas.height;
+          ctx.clearRect(0,0,dw,dh);
+          if (video && video.readyState >= 2) ctx.drawImage(video, 0, 0, dw, dh);
+        } catch (e) {}
+        requestAnimationFrame(drawLoop);
+      }
+      drawLoop();
+
+      // capture/send frames every 250ms (balance fluency and server load)
+      intervalId = setInterval(captureAndSend, 250);
+      // request fullscreen for preview (assume allowed)
+      try { if (container && container.requestFullscreen) container.requestFullscreen(); } catch(e){}
+      // update buttons
+      startBtn.disabled = true;
+      stopBtn.disabled = false;
+    }
+
+    function stopCamera() {
+      if (intervalId) { clearInterval(intervalId); intervalId = null; }
+      if (stream) {
+        try { for (const t of stream.getTracks()) t.stop(); } catch(e){}
+        stream = null;
+      }
+      status.textContent = 'Camera stopped locally';
+      // update buttons
+      startBtn.disabled = false;
+      stopBtn.disabled = true;
+      // Tell server to finalize
+      fetch('/stop', { method: 'POST' }).then(r => r.json()).then(d => console.log('stop->', d)).catch(()=>{});
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) container.requestFullscreen(); else document.exitFullscreen();
+    }
+
+    function resizeCanvas() {
+      // Fit canvas to container while keeping aspect ratio
+      const boxW = container.clientWidth * 0.7; // video uses max-width:70%
+      const boxH = container.clientHeight;
+      // Use video aspect if available
+      const aspect = (video.videoWidth && video.videoHeight) ? (video.videoWidth / video.videoHeight) : (16/9);
+      let displayW = boxW;
+      let displayH = Math.round(displayW / aspect);
+      if (displayH > boxH) {
+        displayH = boxH;
+        displayW = Math.round(displayH * aspect);
+      }
+      // Set canvas pixel size proportional to displayed size (for crispness)
+      canvas.width = Math.round(displayW);
+      canvas.height = Math.round(displayH);
+      canvas.style.width = displayW + 'px';
+      canvas.style.height = displayH + 'px';
+      // position canvas over container
+      if (container) canvas.style.left = ((container.clientWidth - displayW)/2) + 'px';
+      canvas.style.top = '0px';
+    }
+
+    function captureAndSend() {
+      try {
+        // Draw a smaller frame into the offscreen sendCanvas for inference
+        if (CAPTURE_WIDTH && CAPTURE_HEIGHT) {
+          sendCtx.clearRect(0,0,CAPTURE_WIDTH,CAPTURE_HEIGHT);
+          // draw the current video frame scaled into sendCanvas
+          sendCtx.drawImage(video, 0, 0, CAPTURE_WIDTH, CAPTURE_HEIGHT);
+          const dataUrl = sendCanvas.toDataURL('image/jpeg', 0.6);
+          fetch('/detect', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ image: dataUrl }) })
+            .then(r => r.json()).then(handleDetection).catch(()=>{});
+        }
+      } catch (e) {
+        // ignore transient errors
+      }
+    }
+
+    function handleDetection(resp) {
+      // resp should be {detections: {objects: [...]}, identified: [...]}
+      // clear and show any box/label info returned by the server
+      resizeCanvas();
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      // copy current video frame (display already handled by animation loop)
+      // draw bounding boxes returned by the server
+      if (!resp) return;
+      const det = resp.detections || {};
+      const objects = det.objects || [];
+      ctx.lineWidth = 2;
+      ctx.font = '16px Arial';
+      // The server returns coordinates relative to the sent image (CAPTURE_WIDTH x CAPTURE_HEIGHT).
+      // Scale them to the visible canvas size for drawing.
+      const scaleX = canvas.width / (CAPTURE_WIDTH || canvas.width);
+      const scaleY = canvas.height / (CAPTURE_HEIGHT || canvas.height);
+      for (const o of objects) {
+        const x = (o.x || 0) * scaleX; const y = (o.y || 0) * scaleY;
+        const w = (o.width || 0) * scaleX; const h = (o.height || 0) * scaleY;
+        ctx.strokeStyle = 'red';
+        ctx.strokeRect(x, y, w, h);
+        const label = String(o.class || o.label || '').substring(0,40);
+        if (label) {
+          ctx.fillStyle = 'rgba(255,0,0,0.8)';
+          ctx.fillText(label, x+4, y+18);
+        }
+      }
+      // If server returned identified list, show it in status
+      const ids = resp.identified || resp.identifed || [];
+      if (ids && ids.length) {
+        status.textContent = ids.map(i => (i.person_name||i.name||i.label||i)).join(', ');
+      }
+    }
+
+    startBtn.addEventListener('click', startCamera);
+    stopBtn.addEventListener('click', stopCamera);
+    const fsBtn = document.createElement('button'); fsBtn.textContent = 'Fullscreen'; fsBtn.addEventListener('click', toggleFullscreen);
+    document.getElementById('controls').insertBefore(fsBtn, status);
+    // initial button states (we auto-start by default)
+    try { startBtn.disabled = true; stopBtn.disabled = false; } catch(e){}
+
+    // Auto-start on load (assume camera is available)
+    window.addEventListener('load', () => setTimeout(async () => {
+      // Query server status so user can see whether YOLOv4 is loaded
+      try {
+        const resp = await fetch('/status');
+        if (resp && resp.ok) {
+          const info = await resp.json();
+          let parts = [];
+          if (info.detector) parts.push('Detector: ' + info.detector);
+          if (info.identifier) parts.push('Identifier: ' + info.identifier);
+          if (info.yolo_loaded) parts.push('YOLOv4: loaded');
+          if (info.use_cascade) parts.push('Fallback: cascade');
+          if (info.use_simulated) parts.push('Fallback: simulated');
+          if (parts.length) status.textContent = parts.join(' | ');
+        }
+      } catch(e) {
+        // ignore
+      }
+      if (!stream) startCamera();
+    }, 50));
+  </script>
+</body>
+</html>

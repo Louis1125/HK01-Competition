@@ -1,0 +1,75 @@
+{
+  "all_detections": [
+    {
+      "class": "person",
+      "confidence": 0.94,
+      "x": 50,
+      "y": 100,
+      "width": 150,
+      "height": 300,
+      "center_x": 125,
+      "center_y": 250
+    },
+    {
+      "class": "car",
+      "confidence": 0.87,
+      "x": 300,
+      "y": 250,
+      "width": 200,
+      "height": 180,
+      "center_x": 400,
+      "center_y": 340
+    },
+    {
+      "class": "person",
+      "confidence": 0.91,
+      "x": 400,
+      "y": 80,
+      "width": 140,
+      "height": 280,
+      "center_x": 470,
+      "center_y": 220
+    }
+  ],
+  "identified_persons": [
+    {
+      "detection": {
+        "class": "person",
+        "confidence": 0.94,
+        "x": 50,
+        "y": 100,
+        "width": 150,
+        "height": 300,
+        "center_x": 125,
+        "center_y": 250
+      },
+      "database_info": {
+        "person_id": 1001,
+        "name": "Person 1",
+        "age": 30,
+        "department": "Sales",
+        "email": "person1@company.com"
+      }
+    },
+    {
+      "detection": {
+        "class": "person",
+        "confidence": 0.91,
+        "x": 400,
+        "y": 80,
+        "width": 140,
+        "height": 280,
+        "center_x": 470,
+        "center_y": 220
+      },
+      "database_info": {
+        "person_id": 1002,
+        "name": "Person 2",
+        "age": 35,
+        "department": "Sales",
+        "email": "person2@company.com"
+      }
+    }
+  ],
+  "summary": "Detected 3 objects, identified 2 persons"
+}

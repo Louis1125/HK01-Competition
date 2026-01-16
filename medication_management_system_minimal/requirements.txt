@@ -1,0 +1,13 @@
+# Project Dependencies
+
+# Core
+opencv-python>=4.5.0
+numpy>=1.19.0
+PyYAML>=5.3.1
+
+# Optional: For enhanced features
+# tensorflow>=2.4.0  # For Teachable Machine
+# keras>=2.4.0       # For Teachable Machine
+
+# Development
+pytest>=6.0.0

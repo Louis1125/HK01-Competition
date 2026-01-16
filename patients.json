@@ -1,0 +1,17 @@
+{
+  "P001": {
+    "name": "Chan Tai Man",
+    "phone": "+85291234567",
+    "consent": true
+  },
+  "P002": {
+    "name": "Lee Siu Ming",
+    "phone": "+85292345678",
+    "consent": true
+  },
+  "P003": {
+    "name": "Wong Mei Ling",
+    "phone": "+85293456789",
+    "consent": true
+  }
+}

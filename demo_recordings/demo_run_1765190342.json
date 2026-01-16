@@ -1,0 +1,100 @@
+[
+  {
+    "ts": "2025-12-08 18:39:02",
+    "event": "demo_start",
+    "details": "Starting 1-minute demo sequence"
+  },
+  {
+    "ts": "2025-12-08 18:39:02",
+    "event": "camera_start",
+    "details": "Simulated camera warm-up"
+  },
+  {
+    "ts": "2025-12-08 18:39:02",
+    "event": "camera_frame",
+    "details": {
+      "frame": 1,
+      "identified": "Robert Brown",
+      "confidence": 0.85
+    }
+  },
+  {
+    "ts": "2025-12-08 18:39:02",
+    "event": "camera_frame",
+    "details": {
+      "frame": 2,
+      "identified": "Robert Brown",
+      "confidence": 0.7999999999999999
+    }
+  },
+  {
+    "ts": "2025-12-08 18:39:02",
+    "event": "camera_frame",
+    "details": {
+      "frame": 3,
+      "identified": "Robert Brown",
+      "confidence": 0.75
+    }
+  },
+  {
+    "ts": "2025-12-08 18:39:02",
+    "event": "camera_frame",
+    "details": {
+      "frame": 4,
+      "identified": "Robert Brown",
+      "confidence": 0.7
+    }
+  },
+  {
+    "ts": "2025-12-08 18:39:02",
+    "event": "camera_frame",
+    "details": {
+      "frame": 5,
+      "identified": "Robert Brown",
+      "confidence": 0.6499999999999999
+    }
+  },
+  {
+    "ts": "2025-12-08 18:39:02",
+    "event": "camera_stop",
+    "details": "Stopping camera and summarizing"
+  },
+  {
+    "ts": "2025-12-08 18:39:02",
+    "event": "identification_summary",
+    "details": {
+      "person_id": 1,
+      "name": "Robert Brown",
+      "count": 5,
+      "avg_confidence": 0.7499999999999999,
+      "support": 1.0,
+      "total_samples": 5,
+      "latest_timestamp": 1765190341.086405
+    }
+  },
+  {
+    "ts": "2025-12-08 18:39:02",
+    "event": "reminder_trigger",
+    "details": "Medication due for Robert Brown (Aspirin)"
+  },
+  {
+    "ts": "2025-12-08 18:39:02",
+    "event": "reminder_sent",
+    "details": {
+      "title": "Reminder: Aspirin",
+      "body": "Robert Brown is due now."
+    }
+  },
+  {
+    "ts": "2025-12-08 18:39:02",
+    "event": "fall_simulation",
+    "details": "Simulating fall detected by camera"
+  },
+  {
+    "ts": "2025-12-08 18:39:02",
+    "event": "panic_sent",
+    "details": {
+      "result": true
+    }
+  }
+]

@@ -1,0 +1,200 @@
+[
+  {
+    "ts": "2025-12-08 21:45:49",
+    "event": "demo_start",
+    "details": "Three-person medication demo starting"
+  },
+  {
+    "ts": "2025-12-08 21:45:49",
+    "event": "elder_info",
+    "details": {
+      "elder": {
+        "elder_id": 1,
+        "name": "Mr. Chan",
+        "phone": "+85260000001",
+        "external_id": "HK0001",
+        "emergency_contact": "+85290000001"
+      }
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:49",
+    "event": "meds_list",
+    "details": {
+      "elder_id": 1,
+      "meds": [
+        {
+          "med_id": 1,
+          "elder_id": 1,
+          "name": "Aspirin",
+          "dosage": "100mg",
+          "reason": "Hypertension"
+        }
+      ]
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:49",
+    "event": "schedules_list",
+    "details": {
+      "elder_id": 1,
+      "schedules": [
+        {
+          "schedule_id": 1,
+          "med_id": 1,
+          "time": "09:00"
+        }
+      ]
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:49",
+    "event": "elder_info",
+    "details": {
+      "elder": {
+        "elder_id": 2,
+        "name": "Mrs. Lee",
+        "phone": "+85260000002",
+        "external_id": "HK0002",
+        "emergency_contact": "+85290000002"
+      }
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:49",
+    "event": "meds_list",
+    "details": {
+      "elder_id": 2,
+      "meds": [
+        {
+          "med_id": 2,
+          "elder_id": 2,
+          "name": "Metformin",
+          "dosage": "500mg",
+          "reason": "Diabetes"
+        }
+      ]
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:49",
+    "event": "schedules_list",
+    "details": {
+      "elder_id": 2,
+      "schedules": [
+        {
+          "schedule_id": 2,
+          "med_id": 2,
+          "time": "09:30"
+        }
+      ]
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:49",
+    "event": "elder_info",
+    "details": {
+      "elder": {
+        "elder_id": 3,
+        "name": "Mr. Ho",
+        "phone": "+85260000003",
+        "external_id": "HK0003",
+        "emergency_contact": "+85290000003"
+      }
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:49",
+    "event": "meds_list",
+    "details": {
+      "elder_id": 3,
+      "meds": [
+        {
+          "med_id": 3,
+          "elder_id": 3,
+          "name": "Atorvastatin",
+          "dosage": "20mg",
+          "reason": "Cholesterol"
+        }
+      ]
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:49",
+    "event": "schedules_list",
+    "details": {
+      "elder_id": 3,
+      "schedules": [
+        {
+          "schedule_id": 3,
+          "med_id": 3,
+          "time": "10:00"
+        }
+      ]
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:49",
+    "event": "reminder_phase_start",
+    "details": "Simulating reminders for each elder"
+  },
+  {
+    "ts": "2025-12-08 21:45:49",
+    "event": "reminder_sent",
+    "details": {
+      "elder": "Mr. Chan",
+      "med": "Aspirin",
+      "time": "09:00"
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:50",
+    "event": "reminder_sent",
+    "details": {
+      "elder": "Mrs. Lee",
+      "med": "Metformin",
+      "time": "09:30"
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:50",
+    "event": "reminder_sent",
+    "details": {
+      "elder": "Mr. Ho",
+      "med": "Atorvastatin",
+      "time": "10:00"
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:51",
+    "event": "missed_dose_detected",
+    "details": {
+      "elder": "Mrs. Lee",
+      "med": "Metformin"
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:51",
+    "event": "manual_verify",
+    "details": {
+      "elder": "Mr. Chan",
+      "last4": "0001"
+    }
+  },
+  {
+    "ts": "2025-12-08 21:45:51",
+    "event": "showmeds",
+    "details": {
+      "elder": "Mr. Chan",
+      "meds": [
+        {
+          "med_id": 1,
+          "elder_id": 1,
+          "name": "Aspirin",
+          "dosage": "100mg",
+          "reason": "Hypertension"
+        }
+      ]
+    }
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "persons": [
+    {
+      "id": 1,
+      "name": "John Smith",
+      "conditions": [
+        { "condition": "Hypertension", "diagnosed": "2010-06-15", "severity": "moderate", "notes": "On ACE inhibitor; blood pressure monitored weekly." },
+        { "condition": "Osteoarthritis", "diagnosed": "2014-09-20", "severity": "mild", "notes": "Knee pain; physical therapy recommended." }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Mary Johnson",
+      "conditions": [
+        { "condition": "Type 2 Diabetes", "diagnosed": "2008-03-10", "severity": "moderate", "notes": "Controlled with metformin; HbA1c target 7%." },
+        { "condition": "Chronic Obstructive Pulmonary Disease", "diagnosed": "2016-11-02", "severity": "mild", "notes": "Uses inhaler PRN; avoid respiratory irritants." }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Robert Brown",
+      "conditions": [
+        { "condition": "Atrial Fibrillation", "diagnosed": "2018-05-05", "severity": "moderate", "notes": "On anticoagulant; regular INR checks." },
+        { "condition": "Vitamin D Deficiency", "diagnosed": "2020-01-12", "severity": "mild", "notes": "Supplemented with Vitamin D3 1000 IU daily." }
+      ]
+    }
+  ]
+}

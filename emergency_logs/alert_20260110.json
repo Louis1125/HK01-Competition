@@ -1,0 +1,157 @@
+[
+  {
+    "success": true,
+    "timestamp": "2026-01-10 14:51:31",
+    "patient_id": "ELDER_001",
+    "condition": "Fall detected in living room",
+    "severity": "CRITICAL",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-10 14:51:31",
+    "patient_id": "ELDER_002",
+    "condition": "Missed medication dose",
+    "severity": "HIGH",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-10 14:51:31",
+    "patient_id": "1",
+    "condition": "Fall detected by camera",
+    "severity": "CRITICAL",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-10 14:51:44",
+    "patient_id": "1",
+    "condition": "demo: simulated fall from integrated demo",
+    "severity": "CRITICAL",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-10 15:02:07",
+    "patient_id": "1",
+    "condition": "demo: simulated fall from integrated demo",
+    "severity": "CRITICAL",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-10 15:06:26",
+    "patient_id": "1",
+    "condition": "Manual panic triggered via CLI",
+    "severity": "CRITICAL",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-10 15:06:26",
+    "patient_id": "1",
+    "condition": "No response to presence check after 10 minutes of inactivity",
+    "severity": "CRITICAL",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-10 15:12:44",
+    "patient_id": "1",
+    "condition": "Manual panic triggered via CLI",
+    "severity": "CRITICAL",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-10 15:12:44",
+    "patient_id": "1",
+    "condition": "No response to presence check after 10 minutes of inactivity",
+    "severity": "CRITICAL",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-10 16:03:34",
+    "patient_id": 1,
+    "condition": "TEST ALERT - Gmail SMTP Connection Test",
+    "severity": "HIGH",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-10 16:03:50",
+    "patient_id": 1,
+    "condition": "TEST ALERT - Gmail SMTP Connection Test",
+    "severity": "HIGH",
+    "channels": {
+      "test_mode": {
+        "status": "simulated",
+        "message": "TEST_MODE active"
+      }
+    }
+  },
+  {
+    "success": true,
+    "timestamp": "2026-01-10 16:04:26",
+    "patient_id": 1,
+    "condition": "TEST ALERT - Gmail SMTP Connection Test",
+    "severity": "HIGH",
+    "channels": {
+      "smtp": {
+        "status": "success"
+      }
+    }
+  }
+]
